@@ -6,9 +6,17 @@ It's an Apache HTTPd server running mod_proxy which forwards to Google and subsi
 
 Note this *does not* support URL prefixing nor SSL.  So you need to route on `/s` and `/css` as needed using Traefik.
 
-It also uses the proxy cache to reduce the requests to Google.
+It also uses the proxy cache to reduce the requests to Google.  However, it's a simple disk cache so make sure you have enough room to handle DoS attacks.
 
-## Testing locally
+## Usage
+
+```yaml
+service:
+  fonts:
+    image: trajano/google-fonts
+```
+
+## Build test locally
 
 docker rm -f fp ; docker build . -t f && docker run --rm --name fp -p 4000:80 -d f
 curl -v 'localhost:4000/css?family=Roboto:300,400,400i,700,700i&display=swap'
