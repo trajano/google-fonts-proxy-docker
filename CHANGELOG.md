@@ -1,3 +1,7 @@
+# 1.1.3
+
+* Support STATIC_URL to allow mapping without relying on request variables.  Note this replaces https://fonts.gstatic.com/s (including the /s so if you replace it you have to add the /s as well.  See README for the xample.)
+
 # 1.1.2
 
 * Support /icon path

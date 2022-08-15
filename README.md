@@ -20,3 +20,8 @@ service:
 
 docker rm -f fp ; docker build . -t f && docker run --rm --name fp -p 4000:80 -d f
 curl -v 'localhost:4000/css?family=Roboto:300,400,400i,700,700i&display=swap'
+
+## Test with env var
+
+docker rm -f fp ; docker build . -t f && docker run --rm --name fp -p 4000:80 --env STATIC_URL=http://localhost:4000/s -d f
+curl -v 'localhost:4000/css?family=Roboto:300,400,400i,700,700i&display=swap'
