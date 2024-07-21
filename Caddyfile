@@ -1,6 +1,6 @@
 {
 	admin off
-	order replace after encode
+	order replace before encode
 	order cache before rewrite
 	cache {
 		ttl 86400s
@@ -18,48 +18,84 @@
 }
 
 :80 {
-	@resources path /css /css2 /icon
-	cache @resources
-	reverse_proxy @resources https://fonts.googleapis.com {
-		header_up Host {upstream_hostport}
-		header_up -X-Forwarded-For
-		header_up -X-Forwarded-Host
-		header_up -X-Forwarded-Proto
-		header_up Accept-Encoding identity
-		header_down -Cache-Control
-		header_down -Report-To
-		header_down -Content-Security-Policy-Report-Only
-		header_down -Cross-Origin-Opener-Policy
-		header_down -Cross-Origin-Resource-Policy
-		header_down -Link
+	@resources {
+		method GET HEAD
+		path /css /css2 /icon
+	}
+	handle @resources {
+		cache
+		tracing {
+			span {path}
+		}
+		reverse_proxy @resources https://fonts.googleapis.com {
+			header_up Host {upstream_hostport}
+			header_up -X-Forwarded-For
+			header_up -X-Forwarded-Host
+			header_up -X-Forwarded-Proto
+			header_up Accept-Encoding identity
+			header_down -Cache-Control
+			header_down -Report-To
+			header_down -Content-Security-Policy-Report-Only
+			header_down -Cross-Origin-Opener-Policy
+			header_down -Cross-Origin-Resource-Policy
+			header_down -Link
+		}
+
+		replace stream {
+			"https://fonts.gstatic.com/s" {env.STATIC_URL}
+			# unfortunately the following does not work yet
+			# "https://fonts.gstatic.com/s" {http.request.header.X-Forwarded-Proto}://{http.request.header.X-Forwarded-Host}:{http.request.header.X-Forwarded-Port}/s
+			# 
+			# Needs https://github.com/caddyserver/replace-response/issues/26
+			# to allow placeholders
+			# 
+			# Needs https://github.com/caddyserver/replace-response/issues/31
+			# to allow conditionals
+		}
 	}
 
-	replace @resources stream {
-		"https://fonts.gstatic.com/s" {env.STATIC_URL}
-		# unfortunately the following does not work yet
-		# "https://fonts.gstatic.com/s" {http.request.header.X-Forwarded-Proto}://{http.request.header.X-Forwarded-Host}:{http.request.header.X-Forwarded-Port}/s
-		# 
-		# Needs https://github.com/caddyserver/replace-response/issues/26
-		# to allow placeholders
-		# 
-		# Needs https://github.com/caddyserver/replace-response/issues/31
-		# to allow conditionals
+	@static {
+		method GET HEAD
+		path /s/*
+	}
+	handle @static {
+		cache
+		tracing
+		reverse_proxy https://fonts.gstatic.com {
+			header_up Host {upstream_hostport}
+			header_up -X-Forwarded-For
+			header_up -X-Forwarded-Host
+			header_up -X-Forwarded-Proto
+			header_up Accept-Encoding identity
+			header_down -Cache-Control
+			header_down -Report-To
+			header_down -Content-Security-Policy-Report-Only
+			header_down -Cross-Origin-Opener-Policy
+			header_down -Cross-Origin-Resource-Policy
+			header_down -Link
+		}
 	}
 
-	@static path /s/*
-	cache @static
-	reverse_proxy @static https://fonts.gstatic.com {
-		header_up Host {upstream_hostport}
-		header_up -X-Forwarded-For
-		header_up -X-Forwarded-Host
-		header_up -X-Forwarded-Proto
-		header_up Accept-Encoding identity
-		header_down -Cache-Control
-		header_down -Report-To
-		header_down -Content-Security-Policy-Report-Only
-		header_down -Cross-Origin-Opener-Policy
-		header_down -Cross-Origin-Resource-Policy
-		header_down -Link
+	# Debug endpoint, to check if any private information gets leaked
+	@debug {
+		method GET
+		path /debug
+	}
+	handle @debug {
+		rewrite * /get
+		reverse_proxy https://httpbin.org {
+			header_up Host {upstream_hostport}
+			header_up -X-Forwarded-For
+			header_up -X-Forwarded-Host
+			header_up -X-Forwarded-Proto
+			header_up Accept-Encoding identity
+			header_down -Cache-Control
+			header_down -Report-To
+			header_down -Content-Security-Policy-Report-Only
+			header_down -Cross-Origin-Opener-Policy
+			header_down -Cross-Origin-Resource-Policy
+			header_down -Link
+		}
 	}
 
 	respond / 204
