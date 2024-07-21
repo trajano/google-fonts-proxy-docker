@@ -63,4 +63,5 @@
 		header_down -Link
     }
 
+	respond / 204
 }
