@@ -1,5 +1,5 @@
 {
-    admin off
+	admin off
 	order replace after encode
 	order cache before rewrite
 	cache {
@@ -18,11 +18,10 @@
 }
 
 :80 {
-
-    @resources path /css /css2 /icon
+	@resources path /css /css2 /icon
 	cache @resources
-    reverse_proxy @resources https://fonts.googleapis.com {
-        header_up Host {upstream_hostport}
+	reverse_proxy @resources https://fonts.googleapis.com {
+		header_up Host {upstream_hostport}
 		header_up -X-Forwarded-For
 		header_up -X-Forwarded-Host
 		header_up -X-Forwarded-Proto
@@ -33,7 +32,7 @@
 		header_down -Cross-Origin-Opener-Policy
 		header_down -Cross-Origin-Resource-Policy
 		header_down -Link
-    }
+	}
 
 	replace @resources stream {
 		"https://fonts.gstatic.com/s" {env.STATIC_URL}
@@ -49,8 +48,8 @@
 
 	@static path /s/*
 	cache @static
-    reverse_proxy @static https://fonts.gstatic.com {
-        header_up Host {upstream_hostport}
+	reverse_proxy @static https://fonts.gstatic.com {
+		header_up Host {upstream_hostport}
 		header_up -X-Forwarded-For
 		header_up -X-Forwarded-Host
 		header_up -X-Forwarded-Proto
@@ -61,7 +60,7 @@
 		header_down -Cross-Origin-Opener-Policy
 		header_down -Cross-Origin-Resource-Policy
 		header_down -Link
-    }
+	}
 
 	respond / 204
 }
