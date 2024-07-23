@@ -1,7 +1,8 @@
 {
 	admin off
 	order replace before encode
-	order cache before rewrite
+	order replace after vars
+	order replace after copy_response
 	cache {
 		ttl 86400s
 		mode bypass
@@ -41,8 +42,10 @@
 			header_down -Link
 		}
 
+		vars static_url {http.request.header.X-Forwarded-Proto}://{http.request.header.X-Forwarded-Host}:{http.request.header.X-Forwarded-Port}/s
 		replace stream {
-			"https://fonts.gstatic.com/s" {env.STATIC_URL}
+			# "https://fonts.gstatic.com/s" {env.STATIC_URL}
+			"https://fonts.gstatic.com/s" {vars.static_url}
 			# unfortunately the following does not work yet
 			# "https://fonts.gstatic.com/s" {http.request.header.X-Forwarded-Proto}://{http.request.header.X-Forwarded-Host}:{http.request.header.X-Forwarded-Port}/s
 			# 
