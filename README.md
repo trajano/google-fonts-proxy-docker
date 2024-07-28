@@ -8,6 +8,13 @@ Note this *does not* support URL prefixing nor SSL.  So you need to route on `/s
 
 It also uses the proxy cache to reduce the requests to Google.  However, it's a simple disk cache so make sure you have enough room to handle DoS attacks.
 
+## Labels
+
+This comes in two flavors:
+
+1. `httpd` - supports `X-Forwarded-*` headers for automatic determination
+2. `caddy` - supports only `STATIC_URL`
+
 ## Usage
 
 ```yaml
