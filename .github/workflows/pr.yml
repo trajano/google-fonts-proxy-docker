@@ -27,7 +27,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           flavor: |
-            suffix=httpd
+            suffix=-httpd
           images: ghcr.io/trajano/google-fonts
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -44,7 +44,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           flavor: |
-            suffix=caddy
+            suffix=-caddy
           images: ghcr.io/trajano/google-fonts
 
       - name: Build and push Docker image

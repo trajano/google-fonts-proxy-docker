@@ -27,7 +27,7 @@ jobs:
         with:
           flavor: |
             latest=true
-            suffix=httpd
+            suffix=-httpd
           images: trajano/google-fonts
 
       - name: Build and push Docker image
@@ -46,7 +46,7 @@ jobs:
         with:
           flavor: |
             latest=false
-            suffix=caddy
+            suffix=-caddy
           images: trajano/google-fonts
 
       - name: Build and push Docker image
@@ -83,7 +83,7 @@ jobs:
         with:
           flavor: |
             latest=true
-            suffix=httpd
+            suffix=-httpd
           images: ghcr.io/trajano/google-fonts
 
       - name: Build and push Docker image
@@ -102,7 +102,7 @@ jobs:
         with:
           flavor: |
             latest=false
-            suffix=caddy
+            suffix=-caddy
           images: ghcr.io/trajano/google-fonts
 
       - name: Build and push Docker image
