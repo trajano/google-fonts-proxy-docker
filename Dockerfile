@@ -7,7 +7,7 @@ RUN xcaddy build \
     --with github.com/caddyserver/replace-response \
     --with github.com/caddyserver/cache-handler
 
-FROM busybox:1.36.1-uclibc
+FROM busybox:1.36.1-uclibc AS caddy
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 COPY Caddyfile /etc/caddy/Caddyfile
 HEALTHCHECK --start-period=10s --start-interval=1s CMD wget -q --spider http://localhost/ || exit 1

@@ -1,6 +1,6 @@
 # 1.2.0
 
-* Used Caddy rather than Apache Httpd.  However this only supports STATIC_URL and does not support using X-Forwarded-* for the lookup.
+* Provided a Caddy version rather than Apache Httpd.  However this only supports `STATIC_URL` and does not support using `X-Forwarded-*` for the lookup.
 
 # 1.1.4
 
