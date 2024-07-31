@@ -19,18 +19,20 @@
 }
 
 :80
-@tracingEnabled expression {env.OTEL_EXPORTER_OTLP_ENDPOINT} != ""
+(tracing) {
+	@tracingEnabled expression {env.OTEL_EXPORTER_OTLP_ENDPOINT} != ""
+	tracing @tracingEnabled {
+		span {uri}
+	}
+}
 
 @resources {
 	method GET HEAD
 	path /css /css2 /icon
 }
 handle @resources {
+	import tracing
 	cache
-	handle @tracingEnabled
-	tracing {
-		span {uri}
-	}
 
 	reverse_proxy @resources https://fonts.googleapis.com {
 		header_up Host {upstream_hostport}
@@ -64,11 +66,8 @@ handle @resources {
 	path /s/*
 }
 handle @static {
+	import tracing
 	cache
-	handle @tracingEnabled
-	tracing {
-		span {uri}
-	}
 
 	reverse_proxy https://fonts.gstatic.com {
 		header_up Host {upstream_hostport}
@@ -91,6 +90,8 @@ handle @static {
 	path /debug
 }
 handle @debug {
+	import tracing
+
 	rewrite * /get
 	reverse_proxy https://httpbin.org {
 		header_up Host {upstream_hostport}
