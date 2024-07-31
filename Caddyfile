@@ -19,7 +19,7 @@
 }
 
 :80
-@tracingEnabled expression {env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT} != ""
+@tracingEnabled expression {env.OTEL_EXPORTER_OTLP_ENDPOINT} != ""
 
 @resources {
 	method GET HEAD
@@ -29,7 +29,7 @@ handle @resources {
 	cache
 	handle @tracingEnabled
 	tracing {
-		span {path}
+		span {uri}
 	}
 
 	reverse_proxy @resources https://fonts.googleapis.com {
@@ -67,7 +67,7 @@ handle @static {
 	cache
 	handle @tracingEnabled
 	tracing {
-		span {path}
+		span {uri}
 	}
 
 	reverse_proxy https://fonts.gstatic.com {
