@@ -29,11 +29,13 @@ handle @resources {
 
 	reverse_proxy @resources https://fonts.googleapis.com {
 		header_up Host {upstream_hostport}
+		header_up -Cookie
 		header_up -X-Forwarded-For
 		header_up -X-Forwarded-Host
 		header_up -X-Forwarded-Proto
 		header_up Accept-Encoding identity
 		header_down -Cache-Control
+		header_down -Cookie
 		header_down -Report-To
 		header_down -Content-Security-Policy-Report-Only
 		header_down -Cross-Origin-Opener-Policy
@@ -63,11 +65,13 @@ handle @static {
 
 	reverse_proxy https://fonts.gstatic.com {
 		header_up Host {upstream_hostport}
+		header_up -Cookie
 		header_up -X-Forwarded-For
 		header_up -X-Forwarded-Host
 		header_up -X-Forwarded-Proto
 		header_up Accept-Encoding identity
 		header_down -Cache-Control
+		header_down -Cookie
 		header_down -Report-To
 		header_down -Content-Security-Policy-Report-Only
 		header_down -Cross-Origin-Opener-Policy

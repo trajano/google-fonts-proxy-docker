@@ -1,3 +1,6 @@
+# 1.2.2
+Remove cookies from the header
+
 # 1.2.1
 
 * On Caddy, if `OTEL_EXPORTER_OTLP_ENDPOINT` is set then OpenTelemetry tracing will be enabled.  Note this may cause you GDPR issues so use it only if you need it.
