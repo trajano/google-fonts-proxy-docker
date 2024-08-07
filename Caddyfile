@@ -18,29 +18,35 @@
 	}
 }
 
+(clean_headers) {
+	header_up -Cookie
+	header_up -X-Forwarded-For
+	header_up -X-Forwarded-Host
+	header_up -X-Forwarded-Proto
+	header_up User-Agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+	header_up Accept-Encoding identity
+	header_down -Cache-Control
+	header_down -Cookie
+	header_down -Report-To
+	header_down -Content-Security-Policy-Report-Only
+	header_down -Cross-Origin-Opener-Policy
+	header_down -Cross-Origin-Resource-Policy
+	header_down -Link
+}
+
 :80
 
 @resources {
 	method GET HEAD
 	path /css /css2 /icon
 }
+
 handle @resources {
 	cache
 
 	reverse_proxy @resources https://fonts.googleapis.com {
 		header_up Host {upstream_hostport}
-		header_up -Cookie
-		header_up -X-Forwarded-For
-		header_up -X-Forwarded-Host
-		header_up -X-Forwarded-Proto
-		header_up Accept-Encoding identity
-		header_down -Cache-Control
-		header_down -Cookie
-		header_down -Report-To
-		header_down -Content-Security-Policy-Report-Only
-		header_down -Cross-Origin-Opener-Policy
-		header_down -Cross-Origin-Resource-Policy
-		header_down -Link
+		import clean_headers
 	}
 
 	replace stream {
@@ -65,18 +71,33 @@ handle @static {
 
 	reverse_proxy https://fonts.gstatic.com {
 		header_up Host {upstream_hostport}
-		header_up -Cookie
-		header_up -X-Forwarded-For
-		header_up -X-Forwarded-Host
-		header_up -X-Forwarded-Proto
-		header_up Accept-Encoding identity
-		header_down -Cache-Control
-		header_down -Cookie
-		header_down -Report-To
-		header_down -Content-Security-Policy-Report-Only
-		header_down -Cross-Origin-Opener-Policy
-		header_down -Cross-Origin-Resource-Policy
-		header_down -Link
+		import clean_headers
+	}
+}
+
+@ajax {
+	method GET HEAD
+	path /ajax/*
+}
+handle @ajax {
+	cache
+
+	reverse_proxy https://ajax.googleapis.com {
+		header_up Host {upstream_hostport}
+		import clean_headers
+	}
+}
+
+@npm {
+	method GET HEAD
+	path /npm/*
+}
+handle @npm {
+	cache
+
+	reverse_proxy https://cdn.jsdelivr.net {
+		header_up Host {upstream_hostport}
+		import clean_headers
 	}
 }
 
@@ -89,16 +110,7 @@ handle @debug {
 	rewrite * /get
 	reverse_proxy https://httpbin.org {
 		header_up Host {upstream_hostport}
-		header_up -X-Forwarded-For
-		header_up -X-Forwarded-Host
-		header_up -X-Forwarded-Proto
-		header_up Accept-Encoding identity
-		header_down -Cache-Control
-		header_down -Report-To
-		header_down -Content-Security-Policy-Report-Only
-		header_down -Cross-Origin-Opener-Policy
-		header_down -Cross-Origin-Resource-Policy
-		header_down -Link
+		import clean_headers
 	}
 }
 

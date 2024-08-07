@@ -1,5 +1,7 @@
 # 1.2.2
-Remove cookies from the header
+* Remove cookies from the header
+* On Caddy, `/npm` routes to cdn.jsdelivr.net
+* On Caddy, `/ajax` routes to ajax.googleapis.com
 
 # 1.2.1
 
