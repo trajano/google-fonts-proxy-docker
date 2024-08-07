@@ -1,3 +1,12 @@
+# 1.2.2
+* Remove cookies from the header
+* On Caddy, `/npm` routes to cdn.jsdelivr.net
+* On Caddy, `/ajax` routes to ajax.googleapis.com
+
+# 1.2.1
+
+* On Caddy, if `OTEL_EXPORTER_OTLP_ENDPOINT` is set then OpenTelemetry tracing will be enabled.  Note this may cause you GDPR issues so use it only if you need it.
+
 # 1.2.0
 
 * Provided a Caddy version rather than Apache Httpd.  However this only supports `STATIC_URL` and does not support using `X-Forwarded-*` for the lookup.
