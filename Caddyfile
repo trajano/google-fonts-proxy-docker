@@ -31,7 +31,10 @@
 	header_down -Content-Security-Policy-Report-Only
 	header_down -Cross-Origin-Opener-Policy
 	header_down -Cross-Origin-Resource-Policy
+	header_down -X-Xss-Protection
 	header_down -Link
+	header_down Timing-Allow-Origin *
+	header_down X-Content-Type-Options nosniff
 }
 
 :80

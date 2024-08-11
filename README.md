@@ -1,19 +1,28 @@
 # Google Fonts Proxy
 
-This is a drop in replacement for Google Fonts requests so that the source IP of a calling service will not be sent to Google to avoid [fines in the EU](https://www.theregister.com/2022/01/31/website_fine_google_fonts_gdpr/)
+Google Fonts Proxy is a drop-in replacement for direct Google Fonts requests. This proxy server ensures that the source IP of the requesting service is not exposed to Google, helping you avoid [GDPR-related fines in the EU](https://www.theregister.com/2022/01/31/website_fine_google_fonts_gdpr/).
 
-It's an Apache HTTPd server running mod_proxy which forwards to Google and subsitutes the responses so that references to google are replaced with the request of this server.
+This project supports both Apache HTTPd and Caddy servers, depending on the Docker label used.
 
-Note this *does not* support URL prefixing nor SSL.  So you need to route on `/s` and `/css` as needed using Traefik.
+### Apache HTTPd
+In the Apache HTTPd server, `mod_proxy` is utilized to forward requests to Google. The server then substitutes the response to replace any Google references with those of this server.
 
-It also uses the proxy cache to reduce the requests to Google.  However, it's a simple disk cache so make sure you have enough room to handle DoS attacks.
+### Caddy
+For Caddy, a modified version is used that leverages the following plugins:
+* `github.com/caddyserver/caddy/v2` (via `github.com/trajano/caddy/v2@otel-client`)
+* `github.com/caddyserver/replace-response`
+* `github.com/caddyserver/cache-handler`
+
+Caddy also employs a proxy cache to minimize requests to Google. However, it uses a simple disk cache, so ensure adequate storage is available to handle potential DoS attacks.
+
+> **Note:** This proxy does *not* support URL prefixing or SSL. Ensure you route `/s` and `/css` through your SSL termination server (e.g., Traefik or Caddy).
 
 ## Labels
 
-This comes in two flavors:
+The proxy comes in two variants:
 
-1. `httpd` - supports `X-Forwarded-*` headers for automatic determination
-2. `caddy` - supports only `STATIC_URL`
+1. **`httpd`** - Supports `X-Forwarded-*` headers for automatic determination.
+2. **`caddy`** - Supports only the `STATIC_URL` environment variable.
 
 ## Usage
 
@@ -25,12 +34,13 @@ service:
 
 ## Build test locally
 
+### Build and Run
 ```bash
 docker rm -f fp ; docker build . -t f && docker run --rm --name fp -p 4000:80 -d f
 curl -v 'localhost:4000/css?family=Roboto:300,400,400i,700,700i&display=swap'
 ```
 
-## Test with env var
+### Test with Environment Variable
 
 ```bash
 docker rm -f fp ; docker build . -t f && docker run --rm --name fp -p 4000:80 --env STATIC_URL=http://localhost:4000/s -d f
