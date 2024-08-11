@@ -3,7 +3,8 @@ RUN mkdir /cache && chown www-data:www-data /cache
 COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
 
 FROM caddy:builder AS builder
-RUN xcaddy build \
+RUN --mount=type=cache,target=/go/pkg/mod/cache xcaddy build \
+    --with github.com/caddyserver/caddy/v2=github.com/trajano/caddy/v2@otel-client \
     --with github.com/caddyserver/replace-response \
     --with github.com/caddyserver/cache-handler
 
