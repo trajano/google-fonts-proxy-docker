@@ -108,3 +108,4 @@ handle @debug {
 }
 
 respond / 204
+respond 404
