@@ -1,3 +1,9 @@
+# 1.2.1
+
+* Updated Github actions
+* Enable NUTS repository
+* Respond with 404 if not found
+
 # 1.2.0
 
 * Provided a Caddy version rather than Apache Httpd.  However this only supports `STATIC_URL` and does not support using `X-Forwarded-*` for the lookup.

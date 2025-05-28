@@ -5,9 +5,10 @@ COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
 FROM caddy:builder AS builder
 RUN xcaddy build \
     --with github.com/caddyserver/replace-response \
-    --with github.com/caddyserver/cache-handler
+    --with github.com/caddyserver/cache-handler \
+    --with github.com/darkweak/storages/nuts/caddy
 
-FROM busybox:1.36.1-uclibc AS caddy
+FROM busybox:1.37.0-uclibc AS caddy
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 COPY Caddyfile /etc/caddy/Caddyfile
 HEALTHCHECK --start-period=10s --start-interval=1s CMD wget -q --spider http://localhost/ || exit 1
